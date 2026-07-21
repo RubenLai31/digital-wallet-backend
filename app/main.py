@@ -607,3 +607,7 @@ def review_transaction(
     db.commit()
     db.refresh(txn)
     return txn
+
+@app.get("/")
+def root():
+    return {"message": "Digital Wallet API is running", "docs": "/docs"}
