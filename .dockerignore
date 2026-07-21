@@ -1,0 +1,26 @@
+# Virtual environments (don't copy into Docker — we install fresh inside the container)
+.venv/
+venv/
+
+# Local secrets
+.env
+
+# Local SQLite database
+*.db
+
+# Git
+.git/
+.github/
+
+# IDE
+.vscode/
+.idea/
+
+# Testing / cache
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
+Thumbs.db

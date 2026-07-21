@@ -1,0 +1,29 @@
+# Fly.io deployment config
+# Docs: https://fly.io/docs/reference/configuration/
+
+app = "digital-wallet-backend"  # Fly auto-generates a unique name on first deploy; this is just a suggestion
+primary_region = "iad"          # Washington DC — change to a region near you
+                                  # (see: https://fly.io/docs/reference/regions/)
+
+[build]
+  # Uses the Dockerfile in this repo
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true     # free tier: machines sleep after inactivity
+  auto_start_machines = true
+  min_machines_running = 0      # 0 = scale to zero when idle (saves free hours)
+
+# Health check: Fly uses this to verify your app is alive
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/health"
+  timeout = "5s"
+
+# Uncomment to deploy with multiple replicas (paid plans only)
+# [deploy]
+#   strategy = "rolling"
