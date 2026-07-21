@@ -1,0 +1,31 @@
+# Render Blueprint (Infrastructure as Code)
+# See https://render.com/docs/blueprint-spec
+#
+# When you push this repo to GitHub and connect it to Render, this file
+# defines what gets created: a web service (the FastAPI app) and a managed
+# Postgres database. Env vars marked `generateValue` are auto-populated by
+# Render on first deploy — you don't need to set them manually.
+
+services:
+  - type: web
+    name: digital-wallet-backend
+    env: python
+    plan: starter
+    region: oregon
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: JWT_SECRET_KEY
+        generateValue: true   # Render creates a random secret on first deploy
+      - key: DATABASE_URL
+        fromDatabase:
+          name: digital-wallet-db
+          property: connectionString
+      - key: CORS_ORIGINS
+        sync: false           # you'll set this manually after first deploy
+
+databases:
+  - name: digital-wallet-db
+    plan: starter
+    region: oregon

@@ -14,7 +14,13 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()  # must happen before DATABASE_URL is read below
 
+# Render (and some other PaaS providers) hand out DATABASE_URL with a
+# `postgres://` scheme. SQLAlchemy 2.x requires `postgresql://` — the old
+# short form was removed. Convert it here so the app works on Render without
+# the user having to manually edit the connection string.
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./wallet.db")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 
 def make_engine(database_url: str):
